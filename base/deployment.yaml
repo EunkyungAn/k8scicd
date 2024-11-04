@@ -1,0 +1,44 @@
+# base/deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: api-server
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+
+# base/ingress.yml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: host.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                
+# base/service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-server
+spec:
+  ports:
+    - name: svc-port
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

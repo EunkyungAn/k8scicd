@@ -1,0 +1,7 @@
+resources:
+- deployment.yml
+- ingress.yml
+- service.yml
+
+commonLabels:
+  app: api-server

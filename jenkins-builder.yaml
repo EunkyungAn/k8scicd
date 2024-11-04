@@ -1,0 +1,51 @@
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   labels:
+     builder: jenkins-builder
+ spec:
+   serviceAccountName: jenkins-admin
+   containers:
+     - name: git
+       image: alpine/git
+       command:
+       - sleep
+       args:
+       - 99d
+     - name: maven
+       image: maven:3.6.2-jdk-8
+       command:
+       - sleep
+       args:
+       - 99d
+       volumeMounts:
+         - name: mavenvolume
+           mountPath: /root/.m2
+     - name: docker
+       image: docker
+       command:
+       - sleep
+       args:
+       - 99d
+       volumeMounts:
+         - name: dockersock
+           mountPath: /var/run/docker.sock
+     - name: kubectl 
+       image: lachlanevenson/k8s-kubectl
+       command:
+       - sleep
+       args:
+       - 99d
+     - name: busybox
+       image: busybox
+       command:
+       - sleep
+       args:
+       - 99d
+   volumes:
+     - name: dockersock
+       hostPath:
+         path: /var/run/docker.sock
+     - name: mavenvolume
+       persistentVolumeClaim:
+         claimName: maven-pv-claim

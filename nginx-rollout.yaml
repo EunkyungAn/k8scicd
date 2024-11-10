@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nginx-rollout
+  namespace: default
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20   # Canary 인스턴스에 트래픽 20% 전환
+        - pause: {}       # 관찰을 위해 잠시 대기
+        - setWeight: 50   # Canary 인스턴스에 트래픽 50% 전환
+        - pause: {duration: 60s}  # 관찰을 위해 60초 동안 대기
+        - setWeight: 100  # Canary 인스턴스에 트래픽 100% 전환
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80

@@ -9,15 +9,14 @@ spec:
     matchLabels:
       app: nginx
   strategy:
-    canary:
-      canaryService: nginx-canary-svc  # Canary Service 지정
-      stableService: nginx-stable-svc  # Stable Service 지정
+    blueGreen:
+      activeService: nginx-active-svc  # 활성화된 서비스
+      previewService: nginx-preview-svc  # 미리보기 서비스
+      autoPromotionEnabled: true  # 자동으로 새로운 버전으로 트래픽 전환
       steps:
-        - setWeight: 20   # Canary 인스턴스에 트래픽 20% 전환
-        - pause: {}       # 관찰을 위해 잠시 대기
-        - setWeight: 50   # Canary 인스턴스에 트래픽 50% 전환
-        - pause: {duration: 60s}  # 관찰을 위해 60초 동안 대기
-        - setWeight: 100  # Canary 인스턴스에 트래픽 100% 전환
+        - setWeight: 0  # 처음에는 Blue 환경에 트래픽 없음
+        - pause: {duration: 10s}  # 잠시 대기
+        - setWeight: 100  # Green 환경에 트래픽 전환
   template:
     metadata:
       labels:

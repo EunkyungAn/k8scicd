@@ -5,25 +5,22 @@ metadata:
   namespace: default
 spec:
   replicas: 5
+  strategy:
+    blueGreen:
+      activeService: nginx-active-svc
+      inactiveService: nginx-inactive-svc
+      autoPromotionEnabled: true
   selector:
     matchLabels:
       app: nginx
-  strategy:
-    blueGreen:
-      activeService: nginx-active-svc  # 활성화된 서비스
-      previewService: nginx-preview-svc  # 미리보기 서비스
-      autoPromotionEnabled: true  # 자동으로 새로운 버전으로 트래픽 전환
-      steps:
-        - setWeight: 0  # 처음에는 Blue 환경에 트래픽 없음
-        - pause: {duration: 10s}  # 잠시 대기
-        - setWeight: 100  # Green 환경에 트래픽 전환
   template:
     metadata:
       labels:
         app: nginx
+        version: stable  # 라벨 일치 여부 확인
     spec:
       containers:
         - name: nginx
-          image: nginx:latest
+          image: nginx:stable
           ports:
             - containerPort: 80

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-active-svc  # 활성화된 서비스
+  namespace: default
+spec:
+  selector:
+    app: nginx
+    version: stable  # Blue 환경
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-preview-svc  # 미리보기 서비스
+  namespace: default
+spec:
+  selector:
+    app: nginx
+    version: canary  # Green 환경
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP

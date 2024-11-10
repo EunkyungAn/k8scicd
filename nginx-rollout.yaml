@@ -5,8 +5,11 @@ metadata:
   namespace: default
 spec:
   replicas: 5
+  selector:
+    matchLabels:
+      app: nginx
   strategy:
-      canary:
+    canary:
       canaryService: nginx-canary-svc  # Canary Service 지정
       stableService: nginx-stable-svc  # Stable Service 지정
       steps:
@@ -15,9 +18,6 @@ spec:
         - setWeight: 50   # Canary 인스턴스에 트래픽 50% 전환
         - pause: {duration: 60s}  # 관찰을 위해 60초 동안 대기
         - setWeight: 100  # Canary 인스턴스에 트래픽 100% 전환
-  selector:
-    matchLabels:
-      app: nginx
   template:
     metadata:
       labels:

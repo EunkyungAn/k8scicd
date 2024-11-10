@@ -6,7 +6,9 @@ metadata:
 spec:
   replicas: 5
   strategy:
-    canary:
+      canary:
+      canaryService: nginx-canary-svc  # Canary Service 지정
+      stableService: nginx-stable-svc  # Stable Service 지정
       steps:
         - setWeight: 20   # Canary 인스턴스에 트래픽 20% 전환
         - pause: {}       # 관찰을 위해 잠시 대기
